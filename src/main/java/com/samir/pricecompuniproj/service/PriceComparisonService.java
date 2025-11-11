@@ -46,16 +46,13 @@ public class PriceComparisonService {
     try {
       String responseBody = callSerperApi(request.productName());
 
-      // First try shopping results (structured data)
       List<PriceResult> results = parseShoppingResults(responseBody);
 
-      // If no shopping results, parse organic results
       if (results.isEmpty()) {
         log.info("📦 No shopping results, parsing organic results");
         results = parseOrganicResults(responseBody);
       }
 
-      // Return 5 cheapest
       List<PriceResult> cheapest = results.stream()
           .sorted(Comparator.comparing(PriceResult::price))
           .limit(5)
@@ -72,7 +69,6 @@ public class PriceComparisonService {
   }
 
   private String callSerperApi(String productName) throws IOException {
-    // Build Azerbaijani search query
     String searchQuery = productName + " qiymət satış al";
 
     String jsonBody = String.format("""
